@@ -32,11 +32,8 @@ namespace ExcelParserTest.Models
     //Matrix.
     public class Correlations
     {
-        //Better names?
-        public List<string> FactorFamilyRows { get; set; }
-        public List<string> FactorFamilyColumns { get; set; }
-        public List<decimal> Values { get; set; }
-
+        //The object would be the key-value pair for "column cell: value"
+        public List<List<object>> CorrelationMatrix { get; set; } = new List<List<object>>();
     }
     //Dopuble check with Eric for Contributions. 
 /*    public class Name
@@ -97,7 +94,6 @@ namespace ExcelParserTest.Models
 
         public List<List<object>> Datas = new List<List<object>>();
     }
-
 
 
 }

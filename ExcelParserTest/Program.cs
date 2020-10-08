@@ -144,7 +144,7 @@ namespace ExcelParserTest
                     {
                         ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration()
                         {
-                            UseHeaderRow = true,
+                            UseHeaderRow = false,
                         }
                     });
 
@@ -152,15 +152,15 @@ namespace ExcelParserTest
                     //Get all tables.
                     var allTables = dataSet.Tables;
 
-                    var sheetName = "Ranking_ExtraData";
+                    var sheetName = "Description";
                     //Get the table you want (based on sheet).
                     var dataTable = allTables[sheetName];
 
                     switch (sheetName)
                     {
-                  /*      case "Description":
+                        case "Description":
                             DescriptionConverter(dataTable);
-                            break;*/
+                            break;
                         case "Ranking_ExtraData":
                             RankingExtraDataConverter(dataTable);
                             break;
@@ -178,17 +178,16 @@ namespace ExcelParserTest
 
         }
 
-
-
         public static void DescriptionConverter(DataTable dataTable)
         {
             var convertDescriptionList = new List<KeyValuePair<string, string>>();
+
 
             //Loop through each row.
             foreach (DataRow itemsInRow in dataTable.Rows)
             {
                 //Only in the case of Period since there are 3 column values. 
-
+                //Check if it's empty/null 
                 if (itemsInRow.ItemArray[0].ToString() == "Period")
                 {
                     convertDescriptionList.Add(new KeyValuePair<string, string>("PeriodStartDate", itemsInRow.ItemArray[1].ToString()));
@@ -196,9 +195,25 @@ namespace ExcelParserTest
                 }
                 else
                 {
-\                    convertDescriptionList.Add(new KeyValuePair<string, string>(itemsInRow.ItemArray[0].ToString(), itemsInRow.ItemArray[1].ToString()));
+                    convertDescriptionList.Add(new KeyValuePair<string, string>(itemsInRow.ItemArray[0].ToString(), itemsInRow.ItemArray[1].ToString()));
                 }
             }
+
+            var descriptionLists = new List<Description>();
+            if (convertDescriptionList.Count > 0)
+            {
+                descriptionLists.Add(new Description {
+                    Return = convertDescriptionList[0].Value,
+                    PeriodStartDate = DateTime.Parse(convertDescriptionList[1].Value),
+                    PeriodEndDate = DateTime.Parse(convertDescriptionList[2].Value),
+                    RebalanceFrequency = convertDescriptionList[3].Value,
+                    RankingMethod = convertDescriptionList[4].Value,
+                    Slippage = int.Parse(convertDescriptionList[5].Value),
+                    
+                   
+                });
+            }
+            Console.WriteLine(convertDescriptionList[0].Key);
 
         }
 
@@ -206,7 +221,6 @@ namespace ExcelParserTest
         {
             var rankingExtraDataLists = new List<RankingPerformance>();
             
-
             foreach (DataRow itemsInRow in dataTable.Rows)
             {
                 var rankingList = new RankingPerformance()
