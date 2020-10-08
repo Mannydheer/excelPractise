@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "30JHhnKDOVnSTheDBhvMwBYHQ2sFGrAWilFF4+DWuJQ0xl6jtBCrcKBz5uUo25SyC6VbCXhx9QQcax9nXjzhaA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mdheer\\source\\repos\\ExcelParserTest\\ExcelParserTest\\ExcelParserTest.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mdheer\\.nuget\\packages\\exceldatareader\\3.6.0\\exceldatareader.3.6.0.nupkg.sha512",
+    "C:\\Users\\mdheer\\.nuget\\packages\\exceldatareader.dataset\\3.6.0\\exceldatareader.dataset.3.6.0.nupkg.sha512",
+    "C:\\Users\\mdheer\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.1\\microsoft.netcore.platforms.3.1.1.nupkg.sha512",
+    "C:\\Users\\mdheer\\.nuget\\packages\\system.text.encoding.codepages\\4.7.1\\system.text.encoding.codepages.4.7.1.nupkg.sha512"
+  ],
+  "logs": []
+}
