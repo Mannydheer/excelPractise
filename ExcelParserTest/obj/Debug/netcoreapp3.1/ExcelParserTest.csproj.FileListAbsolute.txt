@@ -15,4 +15,5 @@ C:\Users\mdheer\source\repos\ExcelParserTest\ExcelParserTest\obj\Debug\netcoreap
 C:\Users\mdheer\source\repos\ExcelParserTest\ExcelParserTest\bin\Debug\netcoreapp3.1\ExcelDataReader.DataSet.dll
 C:\Users\mdheer\source\repos\ExcelParserTest\ExcelParserTest\bin\Debug\netcoreapp3.1\System.Text.Encoding.CodePages.dll
 C:\Users\mdheer\source\repos\ExcelParserTest\ExcelParserTest\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Text.Encoding.CodePages.dll
+C:\Users\mdheer\source\repos\ExcelParserTest\ExcelParserTest\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 C:\Users\mdheer\source\repos\ExcelParserTest\ExcelParserTest\obj\Debug\netcoreapp3.1\ExcelParserTest.csproj.CoreCompileInputs.cache

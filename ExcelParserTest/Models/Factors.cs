@@ -8,7 +8,7 @@ namespace ExcelParserTest.Models
     {
         //Most likely a List of each.
         public Description Description { get; set; }
-        public Performance Performance{ get; set; }
+        public Performance? Performance{ get; set; }
         public Combinations Combinations { get; set; }
         //4 items per list for each factor.  
         public List<Timing> Timing { get; set; } = new List<Timing>();
@@ -19,7 +19,7 @@ namespace ExcelParserTest.Models
     public class Combinations
     {
         public List<Contributions> Contributions { get; set; } = new List<Contributions>();
-        public Correlations Correlations { get; set; }
+        public List<List<decimal>> Correlations { get; set; } = new List<List<decimal>>();
     }
 
     public class Contributions
@@ -33,7 +33,7 @@ namespace ExcelParserTest.Models
     public class Correlations
     {
         //The object would be the key-value pair for "column cell: value"
-        public List<List<CorrelationData>> CorrelationMatrix { get; set; } = new List<List<CorrelationData>>();
+        public List<List<decimal>> CorrelationMatrix { get; set; } = new List<List<decimal>>();
     }
 
     public class CorrelationData

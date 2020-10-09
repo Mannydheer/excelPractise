@@ -10,6 +10,7 @@
         "dependencies": {
           "ExcelDataReader": "3.6.0",
           "ExcelDataReader.DataSet": "3.6.0",
+          "Newtonsoft.Json": "12.0.3",
           "System.Text.Encoding.CodePages": "4.7.1"
         },
         "runtime": {
@@ -36,6 +37,14 @@
         }
       },
       "Microsoft.NETCore.Platforms/3.1.1": {},
+      "Newtonsoft.Json/12.0.3": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.3.23909"
+          }
+        }
+      },
       "System.Text.Encoding.CodePages/4.7.1": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "3.1.1"
@@ -83,6 +92,13 @@
       "sha512": "sha512-RmINcaqiEkawM9C8oxFMN/CZmn1fGKWVsosbSY/8ARUNdHqV47hqhPVbrG3qUqLaRQI5w4HuqFOqrbhoSWcH6w==",
       "path": "microsoft.netcore.platforms/3.1.1",
       "hashPath": "microsoft.netcore.platforms.3.1.1.nupkg.sha512"
+    },
+    "Newtonsoft.Json/12.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6mgjfnRB4jKMlzHSl+VD+oUc1IebOZabkbyWj2RiTgWwYPPuaK1H97G1sHqGwPlS5npiF5Q0OrxN1wni2n5QWg==",
+      "path": "newtonsoft.json/12.0.3",
+      "hashPath": "newtonsoft.json.12.0.3.nupkg.sha512"
     },
     "System.Text.Encoding.CodePages/4.7.1": {
       "type": "package",

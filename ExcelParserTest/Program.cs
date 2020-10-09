@@ -1,5 +1,6 @@
 ﻿using ExcelDataReader;
 using ExcelParserTest.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,19 +22,31 @@ namespace ExcelParserTest
 
             //Using the DataSet Methods.
             var excelParser = new ExcelDataParser(@"C:\work\Ai-Projects\2.1\ReturnOnAssetsTTM.xlsx");
+            
 
-            DescriptionConverter(excelParser);
+            var description = DescriptionConverter(excelParser);
+            var timing = TimingConverter(excelParser);
+            var sectorPerformance = SectorPerformanceConverter(excelParser);
+            var combinations = CombinationsConverter(excelParser);
+
+
+            var factors = new Factors
+            {
+                Description = description,
+                Timing = timing,
+                SectorPerformance = sectorPerformance,
+                Combinations = combinations
+            };
+
+            var factorsJsonData = JsonConverter(factors);
+
+            //
             RankingPerformanceConverter(excelParser);
-            CombinationsConverter(excelParser);
-            TimingConverter(excelParser);
-            SectorPerformanceConverter(excelParser);
-
-
-           
+         
         }
 
     
-        public static void DescriptionConverter(ExcelDataParser excelParser)
+        public static Description DescriptionConverter(ExcelDataParser excelParser)
         {
             //Pass the sheet name and if we want headerRow or not. 
             var dataTable = excelParser.ExcelParser("Description", false);
@@ -68,9 +81,20 @@ namespace ExcelParserTest
                     RankingMethod = convertDescriptionList[4],
                     Slippage = Convert.ToDecimal((convertDescriptionList[5])),
                     TransactionType = convertDescriptionList[6]
+                    //TODO
+                    //MISSING PROPERTIES. 
                                       
                 };
+
+                return descriptionObj;
+
             }
+            //refactor
+            return null;
+
+           
+
+            
 
         }
         //Ranking_ExtraData & Ranking Sheet.
@@ -125,7 +149,7 @@ namespace ExcelParserTest
 
         //Contributions. 
 
-        public static void CombinationsConverter(ExcelDataParser excelParser)
+        public static Combinations CombinationsConverter(ExcelDataParser excelParser)
         {
 
             var combinations = new Combinations();
@@ -149,12 +173,29 @@ namespace ExcelParserTest
 
             //Correlations Sheet
             //TODO.
-            var dataTableCorrelations = excelParser.ExcelParser("Correlations", true);
+            var dataTableCorrelations = excelParser.ExcelParser("Correlation", false);
 
 
+            foreach (DataRow itemsInRow in dataTableCorrelations.Rows)
+            {
+                var correlationList = new List<decimal>();
+
+                for (int i = 0; i < itemsInRow.ItemArray.Count(); i++)
+                {
+                    //validate? Maybe for empty or spaces?
+                    if(itemsInRow.ItemArray[i] != DBNull.Value)
+                    {
+                        correlationList.Add(Convert.ToDecimal(itemsInRow.ItemArray[i]));
+                    }                                  
+                }
+                //add to combinations object which holds all rows.
+                combinations.Correlations.Add(correlationList);
+            }
+
+            return combinations;
         }
 
-        public static void TimingConverter(ExcelDataParser excelParser)
+        public static List<Timing> TimingConverter(ExcelDataParser excelParser)
         {  
             //TODO
             //Use ENUMS.
@@ -175,9 +216,11 @@ namespace ExcelParserTest
                 });        
             }
 
+            return timingLists;
+
         }
 
-        public static void SectorPerformanceConverter(ExcelDataParser excelParser)
+        public static List<SectionPerformance> SectorPerformanceConverter(ExcelDataParser excelParser)
         {
             //TODO 
             //Use ENUMS.
@@ -200,8 +243,25 @@ namespace ExcelParserTest
                 });
             }
 
+            return sectorPerformanceLists;
+
+
 
         }
+
+
+
+
+        //JSON CONVERTER.
+
+        public static string JsonConverter(Factors factor)
+        {
+            string output = JsonConvert.SerializeObject(factor);
+
+            return output;
+
+        }
+
 
 
 
