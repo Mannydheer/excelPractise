@@ -17,18 +17,22 @@ namespace ExcelParserTest
         public string BenchMark { get; set; }
         public int NumberOfBuckets { get; set; }
         public decimal MinimumPrice { get; set; }
-        public int Id { get; set; }
-        public string NameFr { get; set; }
+        public string Id { get; set; }
         public string NameEn { get; set; }
-        public string DescriptionFr { get; set; }
+        public string NameFr { get; set; }
         public string DescriptionEn { get; set; }
-        public string FamilyNameFr { get; set; }
+        public string DescriptionFr { get; set; }
+        public string PerformanceDescriptionEn { get; set; }
+        public string PerformanceDescriptionFr { get; set; }
         public string FamilyNameEn { get; set; }
+        public string FamilyNameFr { get; set; }
         public int FamilyRank { get; set; }
         public int BpsAlpha { get; set; }
-        public int AdvanceIndicationMonthsMin { get; set; }
-        public int AdvanceIndicationMonthsMax { get; set; }
-       
+        public int AdvanceIndicatorMonthMin { get; set; }
+        public int AdvanceIndicatorMonthMax { get; set; }
+        public int LaggingIndicatorMonthMin { get; set; }
+        public int LaggingIndicatorMonthMax { get; set; }
+
     }
 
 }

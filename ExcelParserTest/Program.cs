@@ -18,8 +18,6 @@ namespace ExcelParserTest
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-
-
             //Using the DataSet Methods.
             var excelParser = new ExcelDataParser(@"C:\work\Ai-Projects\2.1\ReturnOnAssetsTTM.xlsx");
             
@@ -28,6 +26,7 @@ namespace ExcelParserTest
             var timing = TimingConverter(excelParser);
             var sectorPerformance = SectorPerformanceConverter(excelParser);
             var combinations = CombinationsConverter(excelParser);
+
 
 
             var factors = new Factors
@@ -51,7 +50,7 @@ namespace ExcelParserTest
             //Pass the sheet name and if we want headerRow or not. 
             var dataTable = excelParser.ExcelParser("Description", false);
 
-            var convertDescriptionList = new List<string>();
+            var descriptionList = new List<string>();
 
             //Loop through each row.
             foreach (DataRow itemsInRow in dataTable.Rows)
@@ -60,43 +59,46 @@ namespace ExcelParserTest
                 //TODO Check if it's empty/null 
                 if (itemsInRow.ItemArray[0].ToString() == "Period")
                 {
-                    convertDescriptionList.Add(itemsInRow.ItemArray[1].ToString());
-                    convertDescriptionList.Add(itemsInRow.ItemArray[2].ToString());
+                    descriptionList.Add(itemsInRow.ItemArray[1].ToString());
+                    descriptionList.Add(itemsInRow.ItemArray[2].ToString());
                 }
                 else
                 {
-                    convertDescriptionList.Add(itemsInRow.ItemArray[1].ToString());
+                    descriptionList.Add(itemsInRow.ItemArray[1].ToString());
                 }
             }
 
-            Description descriptionObj;
-
-            if (convertDescriptionList.Count > 0)
-            {
-                descriptionObj = new Description {
-                    Return = convertDescriptionList[0],
-                    PeriodStartDate = DateTime.Parse(convertDescriptionList[1]),
-                    PeriodEndDate = DateTime.Parse(convertDescriptionList[2]),
-                    RebalanceFrequency = convertDescriptionList[3],
-                    RankingMethod = convertDescriptionList[4],
-                    Slippage = Convert.ToDecimal((convertDescriptionList[5])),
-                    TransactionType = convertDescriptionList[6]
-                    //TODO
-                    //MISSING PROPERTIES. 
-                                      
-                };
-
-                return descriptionObj;
-
-            }
-            //refactor
-            return null;
-
-           
-
             
-
+             return new Description {
+                    Return = descriptionList[0],
+                    PeriodStartDate = DateTime.Parse(descriptionList[1]),
+                    PeriodEndDate = DateTime.Parse(descriptionList[2]),
+                    RebalanceFrequency = descriptionList[3],
+                    RankingMethod = descriptionList[4],
+                    Slippage = Convert.ToDecimal((descriptionList[5])),
+                    TransactionType = descriptionList[6],
+                    Universe = descriptionList[7],
+                    BenchMark = descriptionList[8],
+                    NumberOfBuckets = Convert.ToInt32(descriptionList[9]),
+                    MinimumPrice = Convert.ToDecimal(descriptionList[10]),
+                    Id = descriptionList[11],
+                    NameEn = descriptionList[12],
+                    NameFr = descriptionList[13],
+                    DescriptionEn = descriptionList[14],
+                    DescriptionFr = descriptionList[15],
+                    PerformanceDescriptionEn = descriptionList[16],
+                    PerformanceDescriptionFr = descriptionList[17],
+                    FamilyNameEn = descriptionList[18],
+                    FamilyNameFr = descriptionList[19],
+                    FamilyRank = Convert.ToInt32(descriptionList[20]),
+                    BpsAlpha = Convert.ToInt32(descriptionList[21]),
+                    AdvanceIndicatorMonthMin = Convert.ToInt32(descriptionList[22]),
+                    AdvanceIndicatorMonthMax = Convert.ToInt32(descriptionList[23]),
+                    LaggingIndicatorMonthMin = Convert.ToInt32(descriptionList[24]),
+                    LaggingIndicatorMonthMax = Convert.ToInt32(descriptionList[25]),
+             };
         }
+
         //Ranking_ExtraData & Ranking Sheet.
         public static void RankingPerformanceConverter(ExcelDataParser excelParser)
         {
