@@ -33,7 +33,15 @@ namespace ExcelParserTest.Models
     public class Correlations
     {
         //The object would be the key-value pair for "column cell: value"
-        public List<List<object>> CorrelationMatrix { get; set; } = new List<List<object>>();
+        public List<List<CorrelationData>> CorrelationMatrix { get; set; } = new List<List<CorrelationData>>();
+    }
+
+    public class CorrelationData
+    {
+        public string NameEn { get; set; }
+        public string NameFr { get; set; }
+        public int? Line { get; set; }
+
     }
     //Dopuble check with Eric for Contributions. 
 /*    public class Name

@@ -11,7 +11,7 @@ namespace ExcelParserTest
         public DateTime PeriodEndDate { get; set; }
         public string RebalanceFrequency { get; set; }
         public string RankingMethod { get; set; }
-        public int Slippage { get; set; }
+        public decimal Slippage { get; set; }
         public string TransactionType { get; set; }
         public string Universe { get; set; }
         public string BenchMark { get; set; }

@@ -6,8 +6,8 @@ namespace ExcelParserTest.Models
 {
     public class Timing
     {
-        public TimingIds Id { get; set; }
-        public int Value { get; set; }
+        public string Id { get; set; }
+        public decimal? Value { get; set; }
         public decimal? Returns { get; set; }
         public bool CurrentStatus { get; set; }
     }
