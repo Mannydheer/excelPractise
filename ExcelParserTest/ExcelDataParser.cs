@@ -9,15 +9,17 @@ namespace ExcelParserTest
 {
     public class ExcelDataParser
     {
-        private readonly string _fileName;
-        public ExcelDataParser(string fileName)
+        private string _fileName;
+        public ExcelDataParser()
         {
-            _fileName = fileName;
+            _fileName = @"C:\work\Ai-Projects\2.1\ReturnOnAssetsTTM.xlsx";
         }
 
 
         public DataTable ExcelParser(string sheetName, bool useHeaderRow)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             using (var stream = File.Open(_fileName, FileMode.Open, FileAccess.Read))
             {
                 // Auto-detect format, supports:

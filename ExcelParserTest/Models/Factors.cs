@@ -65,7 +65,7 @@ namespace ExcelParserTest.Models
     {
         public string Description { get; set; }
         public RankingPerformance RankingPerformance { get; set; }
-        public List<ChartDatas> ChartDatas { get; set; } = new List<ChartDatas>();
+        public ChartDatas ChartDatas { get; set; } 
     }
 
     public class ChartDatas
@@ -73,8 +73,9 @@ namespace ExcelParserTest.Models
         //probably instantiate 5 times since there are 5 range.
         //Don't know if we will use ID or Name to identify.
         public string Name { get; set; }
-        public List<DateTime> Periods { get; set; }
-        public List<decimal> Datas { get; set; } = new List<decimal>();
+        public List<string> Fields { get; set; } = new List<string>();
+
+        public List<List<string>> Datas = new List<List<string>>();
 
     }
 
@@ -82,7 +83,7 @@ namespace ExcelParserTest.Models
     {
         public string Direction { get; set; }
         //Ranking Bar Graph.
-        public RankingData RankingData { get; set; }
+        public List<RankingData> RankingData { get; set; } = new List<RankingData>();
         //Own model for RankingExtraData below?
         public string Formula { get; set; }
         public decimal? Min { get; set; }
@@ -98,9 +99,9 @@ namespace ExcelParserTest.Models
 
     public class RankingData
     {
-        public List<string> Fields { get; set; } = new List<string>();
+        public string Field { get; set; }
+        public decimal Value { get; set; }
 
-        public List<List<object>> Datas = new List<List<object>>();
     }
 
 

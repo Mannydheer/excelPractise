@@ -14,50 +14,42 @@ namespace ExcelParserTest
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+                
+            var description = DescriptionConverter();
+            var timing = TimingConverter();
+            var sectorPerformance = SectorPerformanceConverter();
+            var combinations = CombinationsConverter();
+            var performance = PerformanceConverter();
 
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
-            //Using the DataSet Methods.
-            var excelParser = new ExcelDataParser(@"C:\work\Ai-Projects\2.1\ReturnOnAssetsTTM.xlsx");
-            
-
-            var description = DescriptionConverter(excelParser);
-            var timing = TimingConverter(excelParser);
-            var sectorPerformance = SectorPerformanceConverter(excelParser);
-            var combinations = CombinationsConverter(excelParser);
-
-
-
+            //Instantiate a Factor object which will be converted to JSON. 
             var factors = new Factors
             {
                 Description = description,
                 Timing = timing,
                 SectorPerformance = sectorPerformance,
-                Combinations = combinations
+                Combinations = combinations,
+                Performance = performance
             };
 
             var factorsJsonData = JsonConverter(factors);
-
-            //
-            RankingPerformanceConverter(excelParser);
          
         }
 
     
-        public static Description DescriptionConverter(ExcelDataParser excelParser)
+        public static Description DescriptionConverter()
         {
             //Pass the sheet name and if we want headerRow or not. 
-            var dataTable = excelParser.ExcelParser("Description", false);
+            var excelReader = new ExcelDataParser();
+            var dataTable = excelReader.ExcelParser("Description", false);
 
             var descriptionList = new List<string>();
-
+            
             //Loop through each row.
             foreach (DataRow itemsInRow in dataTable.Rows)
             {
-                //Only in the case of Period since there are 3 column values. 
-                //TODO Check if it's empty/null 
-                if (itemsInRow.ItemArray[0].ToString() == "Period")
+                //Only in the case of Period header. Since there are 3 column values.
+                //In the model, two props (PeriodStateDate & PeriodEndDate) were added. 
+                if (itemsInRow.ItemArray[0].ToString() == "Period" && itemsInRow.ItemArray[2] != DBNull.Value)
                 {
                     descriptionList.Add(itemsInRow.ItemArray[1].ToString());
                     descriptionList.Add(itemsInRow.ItemArray[2].ToString());
@@ -67,8 +59,7 @@ namespace ExcelParserTest
                     descriptionList.Add(itemsInRow.ItemArray[1].ToString());
                 }
             }
-
-            
+        
              return new Description {
                     Return = descriptionList[0],
                     PeriodStartDate = DateTime.Parse(descriptionList[1]),
@@ -94,19 +85,32 @@ namespace ExcelParserTest
                     BpsAlpha = Convert.ToInt32(descriptionList[21]),
                     AdvanceIndicatorMonthMin = Convert.ToInt32(descriptionList[22]),
                     AdvanceIndicatorMonthMax = Convert.ToInt32(descriptionList[23]),
+                    //Changed value to 0 need to check with if they will always provide values. 
                     LaggingIndicatorMonthMin = Convert.ToInt32(descriptionList[24]),
                     LaggingIndicatorMonthMax = Convert.ToInt32(descriptionList[25]),
              };
         }
 
-        //Ranking_ExtraData & Ranking Sheet.
-        public static void RankingPerformanceConverter(ExcelDataParser excelParser)
+        public static Performance PerformanceConverter()
         {
-            //Get the table.
-            var dataTableForRankingExtraDataSheet = excelParser.ExcelParser("Ranking_ExtraData", true);
-
+            //TODO need to add description prop for perofrmance.
+            var performance = new Performance();
             
-            RankingPerformance rankingPerformance;
+            performance.RankingPerformance = RankingPerformanceConverter();
+            performance.ChartDatas = ChartDatasConverter();
+
+            return performance;
+        }
+
+        //Ranking_ExtraData & Ranking Sheet.
+        public static RankingPerformance RankingPerformanceConverter()
+        {
+            var excelReader = new ExcelDataParser();
+
+            //Ranking_ExtraData SHeet.
+            var dataTableForRankingExtraDataSheet = excelReader.ExcelParser("Ranking_ExtraData", true);
+
+            RankingPerformance rankingPerformance = null;
 
             foreach (DataRow itemsInRow in dataTableForRankingExtraDataSheet.Rows)
             {
@@ -127,37 +131,85 @@ namespace ExcelParserTest
                      
             }
 
-
+            //Ranking Sheet
             //Now need to isntantiate ranking dat ana dfill the fields. 
-            var dataTableForRankingSheet = excelParser.ExcelParser("Ranking", true);
+            var dataTableForRankingSheet = excelReader.ExcelParser("Ranking", false);
+       
+            List<object> rankingDataListsFirstRow = dataTableForRankingSheet.Rows[0].ItemArray.ToList();
 
-            List<object> rankingDataListsFirstRow;
+            List<object> rankingDataListsSecondRow = dataTableForRankingSheet.Rows[1].ItemArray.ToList();
 
-            List<object> rankingDataListsSecondRow;
-
-            foreach (DataRow itemsInRow in dataTableForRankingSheet.Rows)
+            //Start at 1 to skip first column of each row.
+            for (int i = 1; i < rankingDataListsFirstRow.Count(); i++)
             {
-               rankingDataListsFirstRow = itemsInRow.ItemArray.ToList();              
+                //Construct array of obj of key-valye.
+                rankingPerformance.RankingData.Add(new RankingData
+                {
+                    Field = rankingDataListsFirstRow[i].ToString(),
+                    Value = Convert.ToDecimal(rankingDataListsSecondRow[i])
+                });
             }
 
-            foreach (DataRow itemsInRow in dataTableForRankingSheet.Rows)
-            {
-                rankingDataListsSecondRow = itemsInRow.ItemArray.ToList();
-            }
+            return rankingPerformance;
         }
 
         //TODO
         //Performance Sheet. 
-
-        //Contributions. 
-
-        public static Combinations CombinationsConverter(ExcelDataParser excelParser)
+        public static ChartDatas ChartDatasConverter()
         {
+            var excelReader = new ExcelDataParser();
+
+            //TODO
+            //Use ENUMS.
+            //Timings Sheet
+            var dataTable = excelReader.ExcelParser("Performance", false);
+
+            var chartData = new ChartDatas();
+
+            var isFirstRow = true;
+
+            foreach (DataRow itemsInRow in dataTable.Rows)
+            {
+
+                if (isFirstRow)
+                {
+                    isFirstRow = false;
+
+                    for (int i = 0; i < itemsInRow.ItemArray.Count(); i++)
+                    {
+                        //first field date it empty...
+                        chartData.Fields.Add(itemsInRow.ItemArray[i].ToString());
+                    }
+                }
+                else
+                {
+                    var dataList = new List<string>();
+
+                    for (int i = 0; i < itemsInRow.ItemArray.Count(); i++)
+                    {
+                        dataList.Add(itemsInRow.ItemArray[i].ToString());
+                    }
+                    chartData.Datas.Add(dataList);
+                }
+               
+                
+            }
+
+
+            return chartData;
+
+        }
+
+        //Combinations Sheet. 
+
+        public static Combinations CombinationsConverter()
+        {
+            var excelReader = new ExcelDataParser();
+            var dataTable = excelReader.ExcelParser("Contributions", true);
 
             var combinations = new Combinations();
 
             //Contributions Sheet
-            var dataTable = excelParser.ExcelParser("Contributions", true);
             var contributionLists = new List<Contributions>();
 
 
@@ -175,7 +227,7 @@ namespace ExcelParserTest
 
             //Correlations Sheet
             //TODO.
-            var dataTableCorrelations = excelParser.ExcelParser("Correlation", false);
+            var dataTableCorrelations = excelReader.ExcelParser("Correlation", false);
 
 
             foreach (DataRow itemsInRow in dataTableCorrelations.Rows)
@@ -197,13 +249,14 @@ namespace ExcelParserTest
             return combinations;
         }
 
-        public static List<Timing> TimingConverter(ExcelDataParser excelParser)
-        {  
+        public static List<Timing> TimingConverter()
+        {
+            var excelReader = new ExcelDataParser();
+
             //TODO
             //Use ENUMS.
-
             //Timings Sheet
-            var dataTable = excelParser.ExcelParser("Timing", true);
+            var dataTable = excelReader.ExcelParser("Timing", true);
 
             var timingLists = new List<Timing>();
          
@@ -222,13 +275,15 @@ namespace ExcelParserTest
 
         }
 
-        public static List<SectionPerformance> SectorPerformanceConverter(ExcelDataParser excelParser)
+        public static List<SectionPerformance> SectorPerformanceConverter()
         {
+            var excelReader = new ExcelDataParser();
+
             //TODO 
             //Use ENUMS.
-
             //SectorPerformance Sheet
-            var dataTable = excelParser.ExcelParser("SectorPerformance", true);
+
+            var dataTable = excelReader.ExcelParser("SectorPerformance", true);
 
             var sectorPerformanceLists = new List<SectionPerformance>();
 
@@ -246,22 +301,19 @@ namespace ExcelParserTest
             }
 
             return sectorPerformanceLists;
-
-
-
         }
-
-
 
 
         //JSON CONVERTER.
 
         public static string JsonConverter(Factors factor)
         {
-            string output = JsonConvert.SerializeObject(factor);
+            //TODO
+            //TODO [10:50 AM] Benoit Parenteau
+            //JsonNamingPolicy.CamelCase
 
-            return output;
 
+            return JsonConvert.SerializeObject(factor);
         }
 
 
